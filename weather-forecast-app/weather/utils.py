@@ -1,20 +1,16 @@
 import os
 from dotenv import load_dotenv
-import requests
 
-# Load environment variables
-load_dotenv()
-
-# Get API key
-API_KEY = os.getenv('OPENWEATHER_API_KEY')
-
-# Example usage
-def get_weather(city):
-    url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
-    response = requests.get(url)
-    return response.json()
-
-# Test it
-if __name__ == "__main__":
-    weather = get_weather("London")
-    print(weather)
+def validate_api_key():
+    """Check if API key is properly configured"""
+    load_dotenv()
+    
+    api_key = os.getenv('OPENWEATHERMAP_API_KEY')
+    
+    if not api_key:
+        return False, "API key not found in environment variables"
+    
+    if api_key == 'your_actual_api_key_here':
+        return False, "Please replace 'your_actual_api_key_here' with your actual OpenWeatherMap API key"
+    
+    return True, "API key is configured"
