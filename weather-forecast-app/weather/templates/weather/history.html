@@ -1,0 +1,124 @@
+{% extends 'weather/base.html' %}
+
+{% block title %}Search History - WeatherCast{% endblock %}
+
+{% block content %}
+<div class="weather-card">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="display-5 fw-bold mb-2">
+                <i class="fas fa-history me-3 text-primary"></i>Search History
+            </h1>
+            <p class="text-muted">All your previous weather searches</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'home' %}" class="btn btn-primary">
+                <i class="fas fa-search me-2"></i> New Search
+            </a>
+            {% if searches %}
+            <button type="button" class="btn btn-outline-danger" 
+                    onclick="showClearConfirmation()">
+                <i class="fas fa-trash me-2"></i> Clear History
+            </button>
+            {% endif %}
+        </div>
+    </div>
+    
+    {% if searches %}
+        <!-- History Table -->
+        <div class="table-responsive history-table">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>City</th>
+                        <th>Temperature</th>
+                        <th>Weather</th>
+                        <th>Humidity</th>
+                        <th>Wind</th>
+                        <th>Country</th>
+                        <th>Date & Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for search in searches %}
+                    <tr>
+                        <td>
+                            <strong>{{ search.city_name }}</strong>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary rounded-pill px-3 py-2">
+                                {{ search.temperature|floatformat:1 }}°C
+                            </span>
+                        </td>
+                        <td class="text-capitalize">
+                            {{ search.weather_description }}
+                        </td>
+                        <td>
+                            {{ search.humidity }}%
+                        </td>
+                        <td>
+                            {{ search.wind_speed }} m/s
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-dark border">
+                                {{ search.country }}
+                            </span>
+                        </td>
+                        <td>
+                            <small>
+                                {{ search.date_searched|date:"M d, Y" }}<br>
+                                {{ search.date_searched|date:"h:i A" }}
+                            </small>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Simple Confirmation (No Modal) -->
+        <div class="alert alert-warning mt-4" id="clearConfirmation" style="display: none;">
+            <h5><i class="fas fa-exclamation-triangle me-2"></i>Clear Search History</h5>
+            <p>Are you sure you want to clear all {{ searches|length }} search records?</p>
+            <p class="text-danger"><strong>This action cannot be undone.</strong></p>
+            <div class="mt-3">
+                <form method="POST" action="{% url 'clear_history' %}" id="clearHistoryForm">
+                    {% csrf_token %}
+                    <button type="button" class="btn btn-secondary" 
+                            onclick="hideClearConfirmation()">Cancel</button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-2"></i> Yes, Clear All History
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+    {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-5">
+            <div class="mb-4 empty-state-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h3 class="mb-3">No Search History Yet</h3>
+            <p class="text-muted mb-4">Start exploring weather information by searching for a city</p>
+            <a href="{% url 'home' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-search me-2"></i> Make Your First Search
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Simple JavaScript functions -->
+<script>
+function showClearConfirmation() {
+    document.getElementById('clearConfirmation').style.display = 'block';
+    // Scroll to confirmation
+    document.getElementById('clearConfirmation').scrollIntoView({ behavior: 'smooth' });
+}
+
+function hideClearConfirmation() {
+    document.getElementById('clearConfirmation').style.display = 'none';
+}
+</script>
+{% endblock %}
