@@ -23,7 +23,7 @@ def get_weather_data(city_name):
     if not api_key:
         # Show helpful error message
         raise Exception(
-            f"❌ API Key not found!\n\n"
+            f" API Key not found!\n\n"
             f"Please create a '.env' file in:\n"
             f"   {project_root}\n\n"
             f"With this content:\n"
@@ -33,7 +33,7 @@ def get_weather_data(city_name):
     
     if api_key == 'your_actual_api_key_here':
         raise Exception(
-            f"⚠️  You're using the placeholder API key!\n\n"
+            f"  You're using the placeholder API key!\n\n"
             f"Please edit:\n"
             f"   {env_path}\n\n"
             f"And replace 'your_actual_api_key_here' with your actual API key.\n"
@@ -50,11 +50,11 @@ def get_weather_data(city_name):
         if response.status_code != 200:
             error_msg = data.get('message', 'Unknown error')
             if response.status_code == 401:
-                raise Exception(f"❌ Invalid API Key: {error_msg}")
+                raise Exception(f" Invalid API Key: {error_msg}")
             elif response.status_code == 404:
-                raise Exception(f"❌ City '{city_name}' not found")
+                raise Exception(f" City '{city_name}' not found")
             else:
-                raise Exception(f"❌ API Error: {error_msg}")
+                raise Exception(f" API Error: {error_msg}")
         
         return {
             'city_name': data['name'],
@@ -67,4 +67,4 @@ def get_weather_data(city_name):
         }
         
     except Exception as e:
-        raise Exception(f"❌ Error: {str(e)}")
+        raise Exception(f" Error: {str(e)}")
